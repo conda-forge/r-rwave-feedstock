@@ -1,5 +1,4 @@
-{% set version = '2.4-5' %}
-
+{% set version = '2.4-8' %}
 {% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
@@ -10,32 +9,36 @@ package:
 source:
   fn: Rwave_{{ version }}.tar.gz
   url:
-    - https://cran.r-project.org/src/contrib/Rwave_{{ version }}.tar.gz
-    - https://cran.r-project.org/src/contrib/Archive/Rwave/Rwave_{{ version }}.tar.gz
-  sha256: 7915528fd0ae87a4204634beb5d6816bc1ad9cc20335595f79d10b34523900e1
+    - {{ cran_mirror }}/src/contrib/Rwave_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/Rwave/Rwave_{{ version }}.tar.gz
+  sha256: 70670b42b07ceb99b03bc2282654fcc1063be2851e62b7418c9aa02ca4e7b8e6
 
 build:
   merge_build_host: True  # [win]
-  number: 1
+  number: 0
   skip: true  # [win32]
-
   rpaths:
     - lib/R/lib/
     - lib/
+
 requirements:
   build:
-    - posix                # [win]
-    - {{ compiler('c') }}        # [unix]
-    - {{ compiler('m2w64_c') }}  # [win]
+    - {{ compiler('c') }}        # [not win]
+    - {{native}}toolchain        # [win]
+    - {{posix}}filesystem        # [win]
+    - {{posix}}make
+    - {{posix}}sed               # [win]
+    - {{posix}}coreutils         # [win]
+    - {{posix}}zip               # [win]
   host:
     - r-base
-
   run:
     - r-base
+    - {{native}}gcc-libs         # [win]
 
 test:
   commands:
-    - $R -e "library('Rwave')"  # [not win]
+    - $R -e "library('Rwave')"           # [not win]
     - "\"%R%\" -e \"library('Rwave')\""  # [win]
 
 about:
@@ -48,9 +51,10 @@ about:
     should also be given to Andrea Wang whose functions on the dyadic wavelet transform
     are included. Rwave is based on the book: "Practical Time-Frequency Analysis: Gabor
     and Wavelet Transforms with an Implementation in S", by Rene Carmona, Wen L. Hwang
-    and Bruno Torresani, Academic Press, 1998.'
-
+    and Bruno Torresani (1998, eBook ISBN:978008053942), Academic Press.'
   license_family: GPL3
+  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'  # [unix]
+  license_file: '{{ environ["PREFIX"] }}\R\share\licenses\GPL-3'  # [win]
 
 extra:
   recipe-maintainers:
@@ -58,3 +62,5 @@ extra:
     - bgruening
     - daler
     - jdblischak
+    - cbrueffer
+    - dbast
