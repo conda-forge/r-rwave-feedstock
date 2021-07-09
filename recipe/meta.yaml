@@ -7,7 +7,6 @@ package:
   version: {{ version|replace("-", "_") }}
 
 source:
-  fn: Rwave_{{ version }}.tar.gz
   url:
     - {{ cran_mirror }}/src/contrib/Rwave_{{ version }}.tar.gz
     - {{ cran_mirror }}/src/contrib/Archive/Rwave/Rwave_{{ version }}.tar.gz
@@ -16,20 +15,20 @@ source:
 build:
   merge_build_host: true  # [win]
   number: 0
-  skip: true  # [win32]
   rpaths:
     - lib/R/lib/
     - lib/
 
 requirements:
   build:
-    - {{ compiler('c') }}        # [not win]
+    - {{ compiler('c') }}              # [not win]
     - {{ compiler('m2w64_c') }}        # [win]
     - {{ posix }}filesystem        # [win]
     - {{ posix }}make
     - {{ posix }}sed               # [win]
     - {{ posix }}coreutils         # [win]
     - {{ posix }}zip               # [win]
+    - cross-r-base {{ r_base }}    # [build_platform != target_platform]
   host:
     - r-base
   run:
@@ -43,19 +42,14 @@ test:
 
 about:
   home: http://www.orfe.princeton.edu/~rcarmona/TFbook/tfbook.html, http://r-forge.r-project.org/projects/rwave/
-  license: GPL (>= 2)
+  license: GPL-2.0-or-later
   summary: 'A set of R functions which provide an environment for the Time-Frequency analysis of 1-D signals (and especially for the wavelet and Gabor transforms of noisy signals). It was originally written for Splus by Rene Carmona, Bruno Torresani, and Wen L. Hwang, first at the University of California at Irvine and then
     at Princeton University.  Credit should also be given to Andrea Wang whose functions on the dyadic wavelet transform are included. Rwave is based on the book: "Practical Time-Frequency Analysis: Gabor and Wavelet Transforms with an Implementation in S", by Rene Carmona, Wen L. Hwang and Bruno Torresani (1998, eBook ISBN:978008053942),
     Academic Press.'
   license_family: GPL3
-  license_file: {{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3
+  license_file:
+    - {{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3
 
 extra:
   recipe-maintainers:
     - conda-forge/r
-    - johanneskoester
-    - bgruening
-    - daler
-    - jdblischak
-    - cbrueffer
-    - dbast
