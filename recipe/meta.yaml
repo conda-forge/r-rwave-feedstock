@@ -1,4 +1,4 @@
-{% set version = "2.6-4" %}
+{% set version = "2.6-5" %}
 {% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
@@ -10,7 +10,7 @@ source:
   url:
     - {{ cran_mirror }}/src/contrib/Rwave_{{ version }}.tar.gz
     - {{ cran_mirror }}/src/contrib/Archive/Rwave/Rwave_{{ version }}.tar.gz
-  sha256: 7dc1c3b258aaac6102fabd86edf9134244fff9ab690653e311988056d35de6fa
+  sha256: 6c9ef75bb376f2e3f5c5dcd3b3fdca7d86797ce809da34f444632657189be2e4
 
 build:
   merge_build_host: true  # [win]
